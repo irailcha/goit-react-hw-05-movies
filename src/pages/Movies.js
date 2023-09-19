@@ -1,13 +1,16 @@
 import React, {useState, useEffect} from "react";
 import Searchbar from "components/Searchbar/Searchbar";
-import {getSearchMovies} from '../api';
+import {SearchMovies} from '../api';
+import MoviesList from "../components/MoviesList/MoviesList"; 
+
 
 export default function Movies() {
   const [searchParams, setSearchParams] = useState({ query: '' });
   const [searchMovies, setSearchMovies] = useState([]);
 
   useEffect(() => {
-    getSearchMovies(searchParams.query) 
+    
+    SearchMovies(searchParams.query) 
       .then((data) => {
         setSearchMovies(data);
       })
@@ -18,7 +21,7 @@ export default function Movies() {
   
 
   const handleSubmit = (value) => {
-    
+    console.log(value)
     setSearchParams({ query: value });
   };
 
@@ -26,11 +29,10 @@ export default function Movies() {
 
   return (
     <div>
-      <Searchbar onSubmit={handleSubmit} movies={searchMovies}/>
+      <Searchbar onSubmit={handleSubmit}/>
+      <MoviesList movies={searchMovies} />
     </div>
   );
 }
-
-
 
 
