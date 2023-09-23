@@ -8,27 +8,27 @@ export default function Movies() {
   const [searchParams, setSearchParams] = useState({ query: '' });
   const [searchMovies, setSearchMovies] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
-    
-    SearchMovies(searchParams.query) 
-      .then((data) => {
+    const fetchMovies = async () => {
+      try {
+        const data = await SearchMovies(searchParams.query);
         setSearchMovies(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error(error);
-      });
+      }
+    };
+
+    fetchMovies();
   }, [searchParams.query]);
-  
 
   const handleSubmit = (value) => {
-    console.log(value)
     setSearchParams({ query: value });
   };
 
   const handleMovieClick = (movieId) => {
     navigate(`/movies/${movieId}`); 
   };
-  
 
   return (
     <div>

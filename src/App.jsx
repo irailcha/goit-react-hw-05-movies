@@ -7,6 +7,9 @@ import GlobalStyle from "GlobalStyle";
 import Cast from "pages/Cast";
 import Reviews from "pages/Reviews";
 // import NotFound from "pages/NotFound";
+import './App.styled';
+import { StyleHeader} from './App.styled';
+
 
 
 
@@ -15,10 +18,10 @@ export const App = () => {
   return (
 
       <div>
-        <header>
+        <StyleHeader>
           <Link to="/home">Home</Link>
           <Link to="/movies">Movies</Link>
-        </header>
+        </StyleHeader>
 
         <Routes>
         

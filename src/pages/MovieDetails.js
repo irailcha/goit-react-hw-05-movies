@@ -1,39 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { MovieDetails as getMovieDetails } from '../api';
-import { useParams } from "react-router-dom";
-import Cast from './Cast';
-import Reviews from './Reviews';
-import { useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+
+import '../MovieDetails.styled';
+import { MovieDetailsStyle, MovieDataStyle, StyleInfo, StyleParaghraph} from '../MovieDetails.styled';
 
 export default function MovieDetails() {
   const [movieData, setMovieData] = useState(null);
   const { movieId } = useParams();
-  const navigate = useNavigate(); 
+  
 
   useEffect(() => {
-    console.log('useEffect у MovieCredits працює');
-    if (movieId) {
-      getMovieDetails(movieId)
-        .then((data) => {
-            console.log(data)
+    const fetchMovieData = async () => {
+      try {
+        if (movieId) {
+          const data = await getMovieDetails(movieId);
           setMovieData(data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } 
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchMovieData();
   }, [movieId]);
 
-  const handleMovieClick = (movieId) => {
-    navigate(`/movies/${movieId}`); 
-  };
-
   const defaultImg = 'https://ireland.apollo.olxcdn.com/v1/files/0iq0gb9ppip8-UA/image;s=1000x700';
-  
+
+
+
   return (
     <div>
       {movieData && (
-        <div>
+        <MovieDetailsStyle>
           <img
             src={
               movieData.poster_path
@@ -43,15 +42,17 @@ export default function MovieDetails() {
             width={250}
             alt="poster"
           />
-          <div>
+          <MovieDataStyle>
             <h1>{movieData.title}</h1>
-            <p>Огляд {movieData.overview}</p>
-            <p>Жанри {movieData.genres.map((genre) => genre.name).join(", ")}</p>
-          </div>
-        </div> 
+            <StyleParaghraph><StyleInfo>User score </StyleInfo>{movieData.vote_average}</StyleParaghraph>
+            <StyleParaghraph><StyleInfo>Overview </StyleInfo>{movieData.overview}</StyleParaghraph>
+            <StyleParaghraph><StyleInfo>Genres </StyleInfo>{movieData.genres.map((genre) => genre.name).join(", ")}</StyleParaghraph>
+          </MovieDataStyle>
+        </MovieDetailsStyle> 
       )}
-      <Cast movieId={movieId} handleMovieClick={handleMovieClick} />
-      <Reviews movieId={movieId} />
+          
+          <Link to={`/movies/${movieId}/cast`} >Cast</Link>
+      <Link to={`/movies/${movieId}/reviews`} >Reviews</Link>
     </div>
   );
 }

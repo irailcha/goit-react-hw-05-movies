@@ -2,37 +2,48 @@ import React, { useEffect, useState } from "react";
 import { getMovieCredits } from '../api';
 import { useParams } from "react-router-dom";
 
-export default function MovieCredits() {
+export default function Cast() {
   const [movieCredits, setMovieCredits] = useState([]);
   const { movieId } = useParams();
+  const [isCreditsOpen, setIsCreditsOpen] = useState(false);
+
 
   useEffect(() => {
-    console.log('useEffect у MovieCredits працює');
-    if (movieId) {
-      getMovieCredits(movieId)
-        .then((data) => {
-            console.log(data.cast)
+    const fetchMovieCredits = async () => {
+      try {
+        if (movieId) {
+          const data = await getMovieCredits(movieId);
+          console.log(data.cast);
           setMovieCredits(data.cast);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } 
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchMovieCredits();
   }, [movieId]);
 
+  useEffect(() => {
+    if (!movieId) return;
+  }, [movieId]);
 
-useEffect(() => {
-if (!movieId) return;
-}, [movieId]);
+  const toggleCredits = () => {
+    setIsCreditsOpen(!isCreditsOpen);
+  };
+
 
   return (
     <div>
-      <h2>Cast</h2>
-      <ul>
-      {movieCredits && movieCredits.map(({id, name}) => (
-          <li key={id}>{name}</li>
-        ))}
-      </ul>
+      <h2 onClick={toggleCredits}>Cast</h2>
+      {isCreditsOpen && (
+        <ul>
+          {movieCredits && movieCredits.length > 0 && movieCredits.map(({id, name}) => (
+            <li key={id}>{name}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
+

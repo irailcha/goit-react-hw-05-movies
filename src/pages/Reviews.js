@@ -1,31 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { getMovieCredits } from '../api';
+import { getMovieReviews } from '../api';
 import { useParams } from "react-router-dom";
 
-export default function MovieReviews() {
+export default function Reviews() {
   const [movieReviews, setMovieReviews] = useState([]);
   const { movieId } = useParams();
+  const [isReviewsOpen, setIsReviewsOpen] = useState(false);
 
   useEffect(() => {
-    if (movieId) {
-      getMovieCredits(movieId)
-        .then((data) => {
+    const fetchReviews = async () => {
+      try {
+        if (movieId) {
+          const data = await getMovieReviews(movieId);
           setMovieReviews(data.results);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } 
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchReviews();
   }, [movieId]);
 
   useEffect(() => {
     if (!movieId) return;
-    }, [movieId]);
+  }, [movieId]);
 
-  
+  const toggleReviews = () => {
+    setIsReviewsOpen(!isReviewsOpen);
+  }
+
   return (
     <div>
-      <h2>Movie Reviews</h2>
+      <h2 onClick={toggleReviews}>Movie Reviews</h2>
       <ul>
         {movieReviews && movieReviews.map(({id, author, content}) => (
           <li key={id}>

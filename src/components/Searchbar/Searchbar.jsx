@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import './Searchbar.styled';
+import { SearchFormInput, SearchForm, SearchButton } from './Searchbar.styled';
 
 const Searchbar = ({ onSubmit }) => {
   const [query, setQuery] = useState('');
@@ -9,15 +11,15 @@ const Searchbar = ({ onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
+    <SearchForm onSubmit={handleSubmit}>
+      <SearchFormInput
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search movies..."
       />
-      <button type="submit">Search</button>
-    </form>
+      <SearchButton type="submit">Search</SearchButton>
+    </SearchForm>
   );
 };
 
