@@ -31,8 +31,9 @@ img {
   height: auto;
 }
 
-ul{
+ul, a{
     list-style: none;
+    text-decoration: none;
 }
 `
 

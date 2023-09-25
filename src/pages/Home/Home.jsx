@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { getTrendingMovies } from "../api";
-import MoviesList from "../components/MoviesList/MoviesList"; 
+import { getTrendingMovies } from "../../api";
+import MoviesList from "../../components/MoviesList/MoviesList"; 
 import { useNavigate } from "react-router-dom";
-import '../Home.styled';
-import { StyleTitle } from '../Home.styled';
+import './Home.styled';
+import { StyleTitle } from './Home.styled';
 
 export default function Home() {
   const [trendingMovies, setTrendingMovies] = useState([]);

@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { MovieDetails as getMovieDetails } from '../api';
-import { useParams, Link } from "react-router-dom";
+import { MovieDetails as getMovieDetails} from '../../api';
+import { useParams, Link, useLocation, Outlet} from "react-router-dom";
+import Cast from "../Cast/Cast";
+import Reviews from "../Reviews/Reviews";
 
-import '../MovieDetails.styled';
-import { MovieDetailsStyle, MovieDataStyle, StyleInfo, StyleParaghraph} from '../MovieDetails.styled';
+import './MovieDetails.styled';
+import { MovieDetailsStyle, MovieDataStyle, StyleInfo, StyleParaghraph, LinkStyle, StyleTitle} from './MovieDetails.styled';
 
 export default function MovieDetails() {
   const [movieData, setMovieData] = useState(null);
   const { movieId } = useParams();
   
+  const location = useLocation();
+  const backLink = location.state?.from ?? '/';
 
   useEffect(() => {
     const fetchMovieData = async () => {
@@ -25,12 +29,15 @@ export default function MovieDetails() {
     fetchMovieData();
   }, [movieId]);
 
+
+  
+
+
   const defaultImg = 'https://ireland.apollo.olxcdn.com/v1/files/0iq0gb9ppip8-UA/image;s=1000x700';
-
-
 
   return (
     <div>
+      <LinkStyle to={backLink}>Go back</LinkStyle>
       {movieData && (
         <MovieDetailsStyle>
           <img
@@ -50,9 +57,12 @@ export default function MovieDetails() {
           </MovieDataStyle>
         </MovieDetailsStyle> 
       )}
-          
-          <Link to={`/movies/${movieId}/cast`} >Cast</Link>
-      <Link to={`/movies/${movieId}/reviews`} >Reviews</Link>
+      <div>
+      <StyleTitle>Additional information</StyleTitle> 
+      <Link to={`/movies/${movieId}/cast`} ><Cast movieId={movieId} title="Cast" /></Link>
+  <Link to={`/movies/${movieId}/reviews`} ><Reviews movieId={movieId} title="Movie Reviews" /></Link>
+      <Outlet /> 
+      </div>
     </div>
   );
 }

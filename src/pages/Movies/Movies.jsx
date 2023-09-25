@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import Searchbar from "components/Searchbar/Searchbar";
-import {SearchMovies} from '../api';
-import MoviesList from "../components/MoviesList/MoviesList"; 
+import {SearchMovies} from '../../api';
+import MoviesList from "../../components/MoviesList/MoviesList"; 
 import { useNavigate } from "react-router-dom";
 
 export default function Movies() {
