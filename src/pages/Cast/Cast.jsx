@@ -2,47 +2,50 @@ import React, { useEffect, useState } from "react";
 import { getMovieCredits } from '../../api';
 import { useParams } from "react-router-dom";
 import './Cast.styled';
-import { StyleTitle, StyleTCastList, StyleTCast, StyleError} from './Cast.styled';
+import {StyleTCastList, StyleTCast, StyleError, StyleTitle} from './Cast.styled';
 
 
 
 export default function Cast({title}) {
   const [movieCredits, setMovieCredits] = useState([]);
   const { movieId } = useParams();
-  const [isCreditsOpen, setIsCreditsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
+    if (!movieId) return;
     const fetchCredits = async () => {
       try {
         if (movieId) {
+          setIsLoading(true)
           const credits = await getMovieCredits(movieId);
-          console.log(credits);
+          
           setMovieCredits(credits);
         }
       } catch (error) {
-        console.error(error);
-      }
-    };
+        setError(error)
+         } finally {
+           setIsLoading(false)
+         }
+       };
 
     fetchCredits();
   }, [movieId]);
 
-  useEffect(() => {
-    if (!movieId) return;
-  }, [movieId]);
 
-  const toggleCredits = () => {
-    setIsCreditsOpen(!isCreditsOpen);
-  };
+
+
 
   const baseURL = "https://image.tmdb.org/t/p/w200";
 
   return (
     <div>
-      <StyleTitle onClick={toggleCredits}>{title}</StyleTitle>
-      {isCreditsOpen && (
+      <StyleTitle>{title}</StyleTitle>
+      {isLoading && <p>Loading...</p>}
+      {error && <p>Something went wrong...</p>}
+      {
         <StyleTCastList>
-          {movieCredits && movieCredits.length > 0 ? (
+          {movieCredits.length > 0 ? (
             movieCredits.map(({ id, name, profile_path }) => (
               <StyleTCast key={id}>
                 {name}
@@ -58,7 +61,7 @@ export default function Cast({title}) {
             <StyleError>There is no cast list for this movie</StyleError>
           )}
         </StyleTCastList>
-      )}
+      }
     </div>
   );
           }  

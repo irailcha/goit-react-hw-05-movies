@@ -2,43 +2,44 @@ import React, { useEffect, useState } from "react";
 import { getMovieReviews } from '../../api';
 import { useParams } from "react-router-dom";
 import './Reviews.styled';
-import { StyleTitle, StyleError, StyleReviewsList} from './Reviews.styled';
+import { StyleError, StyleReviewsList, StyleTitle} from './Reviews.styled';
 
 
 export default function Reviews({title}) {
   const [movieReviews, setMovieReviews] = useState([]);
   const { movieId } = useParams();
-  const [isReviewsOpen, setIsReviewsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     const fetchReviews = async () => {
+      if (!movieId) return;
       try {
+        setIsLoading(true)
         if (movieId) {
           const reviews = await getMovieReviews(movieId);
-          console.log(reviews);
+          
           setMovieReviews(reviews);
         }
-      } catch (error) {
-        console.error(error);
-      }
-    };
+      }  catch (error) {
+        setError(error)
+         } finally {
+           setIsLoading(false)
+         }
+       };
 
     fetchReviews();
   }, [movieId]);
 
-  useEffect(() => {
-    if (!movieId) return;
-  }, [movieId]);
 
-  const toggleReviews = () => {
-    
-    setIsReviewsOpen(!isReviewsOpen);
-  }
+
 
   return (
     <div>
-      <StyleTitle onClick={toggleReviews}>{title}</StyleTitle>
-      {isReviewsOpen && (movieReviews.length > 0 ? (
+      <StyleTitle>{title}</StyleTitle>
+     {isLoading && <p>Loading...</p>}
+      {error && <p>Something went wrong...</p>}
+      {movieReviews.length > 0 ? (
         <StyleReviewsList>
           {movieReviews.map(({ id, author, content }) => (
             <li key={id}>
@@ -49,7 +50,7 @@ export default function Reviews({title}) {
         </StyleReviewsList>
       ) : (
         <StyleError>There are no reviews for the movie</StyleError>
-      ))}
+      )}
     </div>
   );
       }  

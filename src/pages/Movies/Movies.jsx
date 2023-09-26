@@ -1,39 +1,48 @@
 import React, {useState, useEffect} from "react";
+import { useSearchParams } from "react-router-dom";
 import Searchbar from "components/Searchbar/Searchbar";
 import {SearchMovies} from '../../api';
 import MoviesList from "../../components/MoviesList/MoviesList"; 
-import { useNavigate } from "react-router-dom";
+
 
 export default function Movies() {
-  const [searchParams, setSearchParams] = useState({ query: '' });
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchMovies, setSearchMovies] = useState([]);
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
+  
+  
+  const query = searchParams.get('query') ?? '';
 
   useEffect(() => {
+    if (query === "") return;
+    setIsLoading(true)
     const fetchMovies = async () => {
       try {
-        const data = await SearchMovies(searchParams.query);
+        const data = await SearchMovies(query);
         setSearchMovies(data);
       } catch (error) {
-        console.error(error);
-      }
-    };
+        setError(error)
+         } finally {
+           setIsLoading(false)
+         }
+       };
 
     fetchMovies();
-  }, [searchParams.query]);
+  }, [query]);
 
   const handleSubmit = (value) => {
     setSearchParams({ query: value });
   };
 
-  const handleMovieClick = (movieId) => {
-    navigate(`/movies/${movieId}`); 
-  };
+ 
 
   return (
     <div>
       <Searchbar onSubmit={handleSubmit}/>
-      <MoviesList movies={searchMovies} handleMovieClick={handleMovieClick}/>
+      {isLoading && <p>Loading...</p>}
+      {error && <p>Something went wrong...</p>}
+      {searchMovies.length > 0 && <MoviesList movies={searchMovies}/>}
     </div>
   );
 }

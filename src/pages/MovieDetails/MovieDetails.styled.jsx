@@ -55,3 +55,13 @@ export const StyleTitle = styled.h2`
 font-size: 20px;
 padding-left: 20px;
 `
+
+
+export const StyleLink = styled(Link)`
+
+font-size: 15px;
+padding-left: 20px;
+padding-bottom: 10px;
+
+
+`

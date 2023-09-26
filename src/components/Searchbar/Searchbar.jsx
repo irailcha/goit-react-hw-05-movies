@@ -7,6 +7,9 @@ const Searchbar = ({ onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (query.trim() === ""){
+      return alert ("Please, enter search parameters");
+    }
     onSubmit(query);
   };
 
